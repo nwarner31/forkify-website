@@ -9,6 +9,8 @@ import resultsView from "./views/resultsView";
 import paginationView from "./views/paginationView";
 import bookmarksView from "./views/bookmarksView";
 import addRecipeView from "./views/addRecipeView";
+import queryHintView from './views/queryHintView';
+
 import { MODAL_CLOSE_SEC } from "./config";
 import {state} from "./model";
 
@@ -123,6 +125,22 @@ const controlAddRecipe = async function (newRecipe) {
 
 }
 
+const controlSearchQueryTerms = function(text) {
+    let availableTerms = [];
+    if (text) availableTerms = model.getSearchQueries(text);
+    // To prevent the View render from displaying an error message and instead display nothing
+    if (availableTerms.length === 0) availableTerms = "nothing";
+    // This small delay allows for the click event to take place before the elements dissapear
+    setTimeout(_ => {
+        queryHintView.render(availableTerms);
+    }, 200);
+
+}
+
+const controlSelectQueryTerm = function(term) {
+    searchView.updateSearchTerm(term);
+}
+
 const init = function() {
     bookmarksView.addHandlerRender(controlBookmarks);
     recipeView.addHandlerRender(controlRecipes);
@@ -131,6 +149,9 @@ const init = function() {
     searchView.addHandlerSearch(controlSearchResults);
     paginationView.addHandlerClick(controlPagination);
     addRecipeView.addHandlerUpload(controlAddRecipe);
+
+    searchView.addHandlerSearchHelper(controlSearchQueryTerms);
+    queryHintView.addHandlerSelectTerm(controlSelectQueryTerm);
 }
 
 init();

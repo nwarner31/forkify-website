@@ -17,6 +17,28 @@ class SearchView{
         })
     }
 
+    addHandlerSearchHelper(handler) {
+        ["input", "focus"].map(eventName => {
+            this._parentElement.querySelector(".search__field").addEventListener(eventName, (event) => {
+                if (event.target.value.trim().length < 3)
+                {
+                    handler(null);
+                    return;
+                }
+                handler(event.target.value);
+            });
+        })
+
+        this._parentElement.querySelector(".search__field").addEventListener("focusout", (event) => {
+            handler(null);
+        });
+
+    }
+
+    updateSearchTerm(searchTerm) {
+        this._parentElement.querySelector(".search__field").value = searchTerm;
+    }
+
     _clearInput() {
         this._parentElement.querySelector(".search__field").value = "";
     }
