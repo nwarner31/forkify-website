@@ -80,7 +80,6 @@ const controlPagination = function(gotoPageNumber) {
 }
 
 const controlServings = function(newServings) {
-    console.log(newServings);
     // Update the servings (in state)
     model.updateServings(newServings)
 

@@ -138,9 +138,4 @@
     }
   }
 
-  &:hover,
-  .nav__btn--bookmarks:hover + & {
-    visibility: visible;
-    opacity: 1;
-  }
 }
