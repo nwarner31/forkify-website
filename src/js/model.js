@@ -11,7 +11,11 @@ export const state = {
         page: 1,
         resultsPerPage: RESULTS_PER_PAGE
     },
-    bookmarks: []
+    bookmarks: {
+        full: [],
+        filtered:[],
+        searchTerm: ""
+    },
 };
 
 const createRecipeObject = function(data) {
@@ -25,7 +29,7 @@ const createRecipeObject = function(data) {
         servings: recipe.servings,
         cookingTime: recipe.cooking_time,
         ingredients: recipe.ingredients,
-        bookmarked: state.bookmarks.some(bookmark => bookmark.id === recipe.id),
+        bookmarked: state.bookmarks.full.some(bookmark => bookmark.id === recipe.id),
         ...(recipe.key && {key: recipe.key})
     }
 }
@@ -76,7 +80,9 @@ export const updateServings = function(newServings) {
 
 export const addBookmark = function(recipe) {
     // Add bookmark
-    state.bookmarks.push(recipe);
+    state.bookmarks.full.push(recipe);
+    if (recipe.title.toLowerCase().includes(state.bookmarks.searchTerm))
+        state.bookmarks.filtered.push(recipe);
 
     // Mark current recipe as bookmarked
     if(recipe.id === state.recipe.id) state.recipe.bookmarked = true;
@@ -85,7 +91,8 @@ export const addBookmark = function(recipe) {
 };
 
 export const deleteBookmark = function(id) {
-    state.bookmarks = state.bookmarks.filter(recipe => recipe.id !== id);
+    state.bookmarks.full = state.bookmarks.full.filter(recipe => recipe.id !== id);
+    state.bookmarks.filtered = state.bookmarks.filtered.filter(recipe => recipe.id !== id)
 
     // Mark current recipe as bookmarked
     if(id === state.recipe.id) state.recipe.bookmarked = false;
@@ -94,12 +101,26 @@ export const deleteBookmark = function(id) {
 }
 
 const persistBoomarks = function() {
-    localStorage.setItem("bookmarks", JSON.stringify(state.bookmarks));
+    localStorage.setItem("bookmarks", JSON.stringify(state.bookmarks.full));
+}
+
+export const filterBookmarks = function(term) {
+    state.bookmarks.searchTerm = term;
+    if (term === "")  {
+        state.bookmarks.filtered = state.bookmarks.full.slice();
+        return;
+    }
+    state.bookmarks.filtered = state.bookmarks.full.filter(recipe => recipe.title.toLowerCase().includes(term.toLowerCase())
+    );
 }
 
 const init = function() {
     const storage = localStorage.getItem("bookmarks");
-    if (storage) state.bookmarks = JSON.parse(storage);
+    if (storage) {
+        state.bookmarks.full = JSON.parse(storage);
+        filterBookmarks(state.bookmarks.searchTerm);
+    }
+
 }
 
 init();

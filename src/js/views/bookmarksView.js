@@ -9,7 +9,7 @@ class BookmarksView extends View {
     constructor() {
         super();
         const navButton = document.querySelector(".nav__btn--bookmarks");
-        for (let element of [navButton, this._parentElement]) {
+        for (let element of [navButton, this._parentElement.parentElement]) {
             element.addEventListener("mouseenter", () => {
                 this._parentElement.parentElement.style.opacity = "1";
                 this._parentElement.parentElement.style.visibility = "visible";
