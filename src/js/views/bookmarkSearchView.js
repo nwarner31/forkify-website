@@ -22,6 +22,14 @@ class BookmarkSearchView extends View {
         });
     }
 
+    init() {
+        this._parentElement.querySelector("button").addEventListener("click", () => {
+            const input = this._parentElement.querySelector("input");
+            input.value = "";
+            input.dispatchEvent(new Event("input"));
+
+        })
+    }
 }
 
 export default new BookmarkSearchView();

@@ -1,6 +1,6 @@
 import { async } from 'regenerator-runtime';
 
-import { API_URL, API_KEY, RESULTS_PER_PAGE } from "./config";
+import {API_URL, API_KEY, RESULTS_PER_PAGE, BOOKMARKS_PER_PAGE} from "./config";
 import { ajax } from "./helpers";
 
 export const state = {
@@ -13,8 +13,10 @@ export const state = {
     },
     bookmarks: {
         full: [],
-        filtered:[],
-        searchTerm: ""
+        results:[],
+        searchTerm: "",
+        page: 1,
+        resultsPerPage: BOOKMARKS_PER_PAGE
     },
 };
 
@@ -81,8 +83,11 @@ export const updateServings = function(newServings) {
 export const addBookmark = function(recipe) {
     // Add bookmark
     state.bookmarks.full.push(recipe);
-    if (recipe.title.toLowerCase().includes(state.bookmarks.searchTerm))
-        state.bookmarks.filtered.push(recipe);
+    if (recipe.title.toLowerCase().includes(state.bookmarks.searchTerm)) {
+        state.bookmarks.results.push(recipe);
+        state.bookmarks.page = 1;
+    }
+
 
     // Mark current recipe as bookmarked
     if(recipe.id === state.recipe.id) state.recipe.bookmarked = true;
@@ -92,7 +97,8 @@ export const addBookmark = function(recipe) {
 
 export const deleteBookmark = function(id) {
     state.bookmarks.full = state.bookmarks.full.filter(recipe => recipe.id !== id);
-    state.bookmarks.filtered = state.bookmarks.filtered.filter(recipe => recipe.id !== id)
+    state.bookmarks.results = state.bookmarks.results.filter(recipe => recipe.id !== id);
+    state.bookmarks.page = 1;
 
     // Mark current recipe as bookmarked
     if(id === state.recipe.id) state.recipe.bookmarked = false;
@@ -106,12 +112,20 @@ const persistBoomarks = function() {
 
 export const filterBookmarks = function(term) {
     state.bookmarks.searchTerm = term;
+    state.bookmarks.page = 1;
     if (term === "")  {
-        state.bookmarks.filtered = state.bookmarks.full.slice();
+        state.bookmarks.results = state.bookmarks.full.slice();
         return;
     }
-    state.bookmarks.filtered = state.bookmarks.full.filter(recipe => recipe.title.toLowerCase().includes(term.toLowerCase())
+    state.bookmarks.results = state.bookmarks.full.filter(recipe => recipe.title.toLowerCase().includes(term.toLowerCase())
     );
+}
+
+export const getBookmarkResultPage = function(page = state.bookmarks.page) {
+    state.bookmarks.page = page;
+    const startOfPage = (page - 1) * BOOKMARKS_PER_PAGE;
+    const endOfPage = startOfPage + BOOKMARKS_PER_PAGE;
+    return state.bookmarks.results.slice(startOfPage, endOfPage);
 }
 
 const init = function() {
@@ -141,7 +155,6 @@ export const uploadRecipe = async function(newRecipe) {
                 const [quantity, unit, description] = ingredientArray
                 return { quantity: quantity ? +quantity : null, unit, description };
             });
-
 
         const recipe = {
           title: newRecipe.title,

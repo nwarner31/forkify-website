@@ -3,8 +3,12 @@ import icons from 'url:../../img/icons.svg';
 
 
 class PaginationView extends View {
-    _parentElement = document.querySelector(".pagination");
+    _parentElement
 
+    constructor(parentSelector) {
+        super();
+        this._parentElement = document.querySelector(parentSelector);
+    }
     addHandlerClick(handler) {
         this._parentElement.addEventListener("click", function(e) {
            const button = e.target.closest('.btn--inline');
@@ -48,4 +52,5 @@ class PaginationView extends View {
     }
 }
 
-export default new PaginationView();
+export const searchPaginationView = new PaginationView(".search-pagination");
+export const bookmarkPaginationView = new PaginationView(".bookmark-pagination");
