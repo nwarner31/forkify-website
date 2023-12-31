@@ -11,10 +11,10 @@
   list-style-type: none;
   font-size: 2rem;
   z-index: 10;
-  background-color: #f9f5f3;
+  background-color: white;
   cursor: pointer;
 }
 
 .query-hints li:hover {
-  background-color: #f38e82;
+  background-color: $color-grad-1;
 }
