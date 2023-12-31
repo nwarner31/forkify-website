@@ -80,6 +80,7 @@ const controlAddBookmark = function() {
 
     // 3) Render bookmarks
     bookmarksView.render(model.getBookmarkResultPage());
+    bookmarkPaginationView.render(model.state.bookmarks);
 }
 
 const controlPagination = function(gotoPageNumber) {

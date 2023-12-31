@@ -85,7 +85,6 @@ export const addBookmark = function(recipe) {
     state.bookmarks.full.push(recipe);
     if (recipe.title.toLowerCase().includes(state.bookmarks.searchTerm)) {
         state.bookmarks.results.push(recipe);
-        state.bookmarks.page = 1;
     }
 
 
@@ -98,9 +97,11 @@ export const addBookmark = function(recipe) {
 export const deleteBookmark = function(id) {
     state.bookmarks.full = state.bookmarks.full.filter(recipe => recipe.id !== id);
     state.bookmarks.results = state.bookmarks.results.filter(recipe => recipe.id !== id);
-    state.bookmarks.page = 1;
+    // Goes back 1 page if delete only bookmark on the last page
+    if (state.bookmarks.results.length <= (state.bookmarks.resultsPerPage * (state.bookmarks.page - 1)))
+        state.bookmarks.page -= 1;
 
-    // Mark current recipe as bookmarked
+    // Mark current recipe as not bookmarked
     if(id === state.recipe.id) state.recipe.bookmarked = false;
 
     persistBoomarks();
