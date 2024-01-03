@@ -11,13 +11,28 @@ class AddRecipeView extends View {
     _buttonOpen = document.querySelector(".nav__btn--add-recipe");
     _buttonClose = document.querySelector(".btn--close-modal");
 
+
+
     constructor() {
         super();
         this._addHandlerShowWindow();
         this._addHandlerHideWindow();
         this._overlay.addEventListener("click", () => {
             this.closeWindow();
-        })
+        });
+       this._setupEvents();
+    }
+    _setupEvents() {
+        this._ingredientContainer = document.querySelector(".ingredient-container");
+        document.getElementById("ar-ai-button").addEventListener("click", () => {
+            console.log("add clicked");
+            this._addIngredientRow();
+        });
+        this._ingredientContainer.addEventListener("click", (event) => {
+            const deleteInput = event.target.closest(".upload__delete-button");
+            if (!deleteInput) return;
+            deleteInput.parentElement.parentElement.remove();
+        });
     }
     _addHandlerShowWindow() {
         this._buttonOpen.addEventListener("click", (function() {
@@ -53,78 +68,72 @@ class AddRecipeView extends View {
 
     resetForm() {
         this._parentElement.innerHTML = this._formMarkup;
+        this._setupEvents();
+    }
+
+    _addIngredientRow() {
+        const ingredientInputs = this._ingredientContainer.querySelectorAll("input");
+        console.log(ingredientInputs[ingredientInputs.length-1]);
+        const newId = +ingredientInputs[ingredientInputs.length-1].getAttribute("controlid") + 1;
+        this._ingredientContainer.insertAdjacentHTML("beforeend", `
+            <div class="upload__row">
+                <input controlid="${newId}" name="ingredient-${newId}">
+                    <div class="upload__delete" >
+                        <button type="button" class="upload__delete-button">X</button>
+                    </div>
+            </div>
+        `)
     }
 
     _generateMarkup() {
     }
 
     _formMarkup = `
-    <div class="upload__column">
+    <div class="upload__body">
             <h3 class="upload__heading">Recipe data</h3>
-            <label>Title</label>
-            <input value="TEST" required name="title" type="text" />
-            <label>URL</label>
-            <input value="TEST" required name="sourceUrl" type="text" />
-            <label>Image URL</label>
-            <input value="TEST" required name="image" type="text" />
-            <label>Publisher</label>
-            <input value="TEST" required name="publisher" type="text" />
-            <label>Prep time</label>
-            <input value="23" required name="cookingTime" type="number" />
-            <label>Servings</label>
-            <input value="23" required name="servings" type="number" />
-        </div>
 
-        <div class="upload__column">
-            <h3 class="upload__heading">Ingredients</h3>
-            <label>Ingredient 1</label>
-            <input
-                    value="0.5,kg,Rice"
-                    type="text"
-                    required
-                    name="ingredient-1"
-                    placeholder="Format: 'Quantity,Unit,Description'"
-            />
-            <label>Ingredient 2</label>
-            <input
-                    value="1,,Avocado"
-                    type="text"
-                    name="ingredient-2"
-                    placeholder="Format: 'Quantity,Unit,Description'"
-            />
-            <label>Ingredient 3</label>
-            <input
-                    value=",,salt"
-                    type="text"
-                    name="ingredient-3"
-                    placeholder="Format: 'Quantity,Unit,Description'"
-            />
-            <label>Ingredient 4</label>
-            <input
-                    type="text"
-                    name="ingredient-4"
-                    placeholder="Format: 'Quantity,Unit,Description'"
-            />
-            <label>Ingredient 5</label>
-            <input
-                    type="text"
-                    name="ingredient-5"
-                    placeholder="Format: 'Quantity,Unit,Description'"
-            />
-            <label>Ingredient 6</label>
-            <input
-                    type="text"
-                    name="ingredient-6"
-                    placeholder="Format: 'Quantity,Unit,Description'"
-            />
-        </div>
+            <div class="upload__container-row">
+                <div class="upload__row">
+                    <label class="upload__label">Title</label><input name="title">
+                </div>
+                <div class="upload__row">
+                    <label class="upload__label">URL</label><input name="sourceUrl">
+                </div>
+                <div class="upload__row">
+                    <label class="upload__label">Image URL</label><input name="image">
+                </div>
+                <div class="upload__row">
+                    <label class="upload__label">Publisher</label><input name="publisher">
+                </div>
+                <div class="upload__row">
+                    <label class="upload__label">Prep Time</label><input name="cookingTime">
+                </div>
+                <div class="upload__row">
+                    <label class="upload__label">Servings</label><input name="servings">
+                </div>
+            </div>
 
+            <div class="upload__container">
+                <h3 class="upload__heading">Ingredients</h3>
+                <div class="upload__add">
+                    <button type="button" id="ar-ai-button">Add</button>
+                </div>
+            </div>
+
+            <div class="upload__container-row ingredient-container">
+                <div class="upload__row">
+                    <input class="ingredient-input" controlid="1" placeholder="Format: 'Quantity,Unit,Description'" name="ingredient-1">
+                    <div class="upload__delete"></div>
+                </div>
+
+            </div>
+        </div>
         <button class="btn upload__btn">
             <svg>
                 <use href="${icons}#icon-upload-cloud"></use>
             </svg>
             <span>Upload</span>
-        </button>`
+        </button>`;
 
 }
 

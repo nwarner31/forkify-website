@@ -3,7 +3,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100rem;
+  width: 50rem;
   background-color: white;
   border-radius: 9px;
 
@@ -35,6 +35,8 @@
   backdrop-filter: blur(4px);
   z-index: 100;
   transition: all 0.5s;
+
+
 }
 
 .hidden {
@@ -43,15 +45,73 @@
 }
 
 .upload {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: 4rem 6rem;
+  display: grid;
+  &__ingredients {
+    float: left;
+  }
 
-  &__column {
-    display: grid;
-    grid-template-columns: 1fr 2.8fr;
+  &__container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
+  &__container h3 {
+    flex-grow: 1;
+  }
+  &__container-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  &__row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  &__row label {
+    width: 13rem;
+  }
+  &__row input {
+    flex-grow: 1;
+  }
+  &__add {
+    height: 100%;
+    display: block;
+    margin-right: .5rem;
+  }
+  &__add button {
+    height: 100%;
+    //display: block;
+    padding: .15rem 1rem;
+    background-color: $color-primary;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  &__delete {
+    width: 5rem;
+  }
+  &__delete-button {
+    width: 100%;
+    background-color: red;
+    color: white;
+    height: 3.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+
+  &__row {
+    width: 100%;
+  }
+
+  &__body {
     align-items: center;
-    gap: 1.5rem;
+    row-gap: 1.5rem;
+    overflow-y: auto;
+    height: 500px;
+    width: 100%;
 
     & label {
       font-size: 1.5rem;
@@ -65,6 +125,8 @@
       border: 1px solid #ddd;
       border-radius: 0.5rem;
       transition: all 0.2s;
+      margin-bottom: 7px;
+      width: 100%;
 
       &::placeholder {
         color: $color-grey-light-3;
@@ -78,9 +140,8 @@
     }
 
     & button {
-      grid-column: 1 / span 2;
       justify-self: center;
-      margin-top: 1rem;
+      margin: auto;
     }
   }
 
